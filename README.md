@@ -1,6 +1,79 @@
 # grunt-inline-task-sugar
 
-> Plugin which provides sugar features for expressing concise task lists
+> Plugin which provides following sugar features for registering grunt alias type tasks:
+
+* Flatten nested arrays
+* Remove falsy values
+* Extend multi tasks inline
+
+### Overview
+
+This plugin does not expose any multi task targets. Instead it wraps the standard grunt.registerTask function 
+
+### Usage examples
+
+Nested arrays in task lists are flattened and falsy values removes. This allows for terse conditional evaluation
+
+```js
+grunt.registerTask('foo', [
+    'standardTask',
+    [
+        'nestedTask',
+        'nestedTask2'
+    ],
+    //Falsy value will be stripped
+    (grunt.option('someCondition') ? 'conditionalTask' : null),
+    (function() {
+        return [
+            'taskReturnedFromFunction'
+        ];
+    }())
+    
+]);
+```
+
+You can pass config objects inline, for example the following config will register the tasks `shell:hello` and `shell:world`
+and convert the task definition to `['shell:hello', 'shell:world']`
+
+```js
+grunt.registerTask('helloWorld', {
+            shell: {
+                hello: {
+                    command: 'echo HELLO'
+                },
+                world: {
+                    command: 'echo WORLD'
+                }
+            }
+        }
+    );
+```
+
+Config objects can also be nested in arrays
+
+```js
+grunt.registerTask('helloWorld', [
+        'someTask',
+        {
+            shell: {
+                hello: {
+                    command: 'echo HELLO'
+                },
+                world: {
+                    command: 'echo WORLD'
+                }
+            }
+        },
+        'someOtherTask'
+    );
+```
+
+This will register the task helloWorld as an alias to `['someTask', 'shell:hello', 'shell:world', 'someOtherTask']`
+
+Task inlining is achieved under the hood using the excellent [grunt-extend-config](https://www.npmjs.org/package/grunt-extend-config) plugin.
+
+Remember, just because you can inline tasks doesn't mean you should! 
+
 
 ## Getting Started
 This plugin requires Grunt `~0.4.4`
@@ -15,72 +88,6 @@ Once the plugin has been installed, it may be enabled inside your Gruntfile with
 
 ```js
 grunt.loadNpmTasks('grunt-inline-task-sugar');
-```
-
-## The "inline_task_sugar" task
-
-### Overview
-In your project's Gruntfile, add a section named `inline_task_sugar` to the data object passed into `grunt.initConfig()`.
-
-```js
-grunt.initConfig({
-  inline_task_sugar: {
-    options: {
-      // Task-specific options go here.
-    },
-    your_target: {
-      // Target-specific file lists and/or options go here.
-    },
-  },
-});
-```
-
-### Options
-
-#### options.separator
-Type: `String`
-Default value: `',  '`
-
-A string value that is used to do something with whatever.
-
-#### options.punctuation
-Type: `String`
-Default value: `'.'`
-
-A string value that is used to do something else with whatever else.
-
-### Usage Examples
-
-#### Default Options
-In this example, the default options are used to do something with whatever. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result would be `Testing, 1 2 3.`
-
-```js
-grunt.initConfig({
-  inline_task_sugar: {
-    options: {},
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
-    },
-  },
-});
-```
-
-#### Custom Options
-In this example, custom options are used to do something else with whatever else. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result in this case would be `Testing: 1 2 3 !!!`
-
-```js
-grunt.initConfig({
-  inline_task_sugar: {
-    options: {
-      separator: ': ',
-      punctuation: ' !!!',
-    },
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
-    },
-  },
-});
-```
 
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).

@@ -56,6 +56,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('test', ['jasmine_node', [
         'clean',
+        'helloWorld',
         {
             "file-creator": {
                 "basic": {
@@ -72,4 +73,17 @@ module.exports = function (grunt) {
     // By default, lint and run all tests.
     grunt.registerTask('default', ['jshint', (grunt.option('dirty') ? null : 'test')]);
 
+
+
+    grunt.registerTask('helloWorld', {
+            shell: {
+                hello: {
+                    command: 'echo HELLO'
+                },
+                world: {
+                    command: 'echo WORLD'
+                }
+            }
+        }
+    );
 };
