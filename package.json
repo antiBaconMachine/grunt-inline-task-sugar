@@ -1,7 +1,7 @@
 {
   "name": "grunt-inline-task-sugar",
   "description": "Plugin which provides sugar features for expressing concise task lists",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "homepage": "https://github.com/antiBaconMachine/grunt-inline-task-sugar",
   "author": {
     "name": "Ollie Edwards",
